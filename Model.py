@@ -203,6 +203,8 @@ class Model:
         return link_loss, link_prediction, link_end, relation_loss, relation_prediction, target_relation
 
     def batch_infer(self, batch):
+        self.agent.eval()
+        
         input_text = [i.strip().split("<utterance>") for i in batch]
         edu_number = [len(i) for i in input_text]
         link_prediction, relation_prediction = [], []
