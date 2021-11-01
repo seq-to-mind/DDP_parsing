@@ -14,7 +14,7 @@ We trained and evaluated the model with two English dialogue discourse parsing c
 ## Data Format
 * [Inference Input] `InputSentence`: The input dialogue content with the #ROOT# head token and utterance split `\<utterance\>`. The raw text will be tokenized and encoded by the `roberta-base` language backbone. <br>
     * Raw Sequence Example: <br>
-    *#ROOT# \<utterance\> A: Hi Tom, are you busy tomorrow’s afternoon? \<utterance\> B: I’m pretty sure I am. What’s up? \<utterance\> A: Can you go with me to the animal shelter?. \<utterance\> B: What do you want to do? ... ... \<utterance\> B: I wonder what he'll name it. \<utterance\> A: He said he’d name it after his hamster –Lemmy- he's a great Motorhead fan :-)
+    *#ROOT# \<utterance\> A: Hi Tom, are you busy tomorrow’s afternoon? \<utterance\> B: I’m pretty sure I am. What’s up? \<utterance\> A: Can you go with me to the animal shelter?. \<utterance\> B: What do you want to do? ... ... \<utterance\> B: I wonder what he'll name it. \<utterance\> A: He said he’d name it after his hamster –Lemmy- he's a great Motorhead fan :-)*
 
 * [Inference Output] `all_sample_utter_level`: The list of utterances, each utterance is taken as one EDU in the parsing process. <br>
     
