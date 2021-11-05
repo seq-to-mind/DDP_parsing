@@ -34,8 +34,7 @@ We trained and evaluated the model with two English dialogue discourse parsing c
 ```
 @inproceedings{liu-chen-2021-improving,
     title = "Improving Multi-Party Dialogue Discourse Parsing via Domain Integration",
-    author = "Liu, Zhengyuan  and
-      Chen, Nancy",
+    author = "Liu, Zhengyuan and Chen, Nancy",
     booktitle = "Proceedings of the 2nd Workshop on Computational Approaches to Discourse",
     month = nov,
     year = "2021",
