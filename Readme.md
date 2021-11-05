@@ -2,7 +2,7 @@
 * One implementation of the paper "Improving Multi-Party Dialogue Discourse Parsing via Domain Integration". <br>
 * The parsing follows the Segmented Discourse Representation Theory (SDRT) scheme. <br>
 * Users can apply it to parse the input dialogue text, and get dependency-parsing structure and relation prediction. <br>
-* This repo and the pre-trained model is only for research use. <br>
+* This repo and the pre-trained model are only for research use. <br>
 
 ## Package Requirements
 1. pytorch==1.7.1
@@ -32,10 +32,16 @@ We trained and evaluated the model with two English dialogue discourse parsing c
 ## Citation
 
 ```
-@article{liu2021improving,
-  title={Improving Multi-Party Dialogue Discourse Parsing via Domain Integration},
-  author={Liu, Zhengyuan and Chen, Nancy F},
-  journal={arXiv preprint arXiv:2110.04526},
-  year={2021}
+@inproceedings{liu-chen-2021-improving,
+    title = "Improving Multi-Party Dialogue Discourse Parsing via Domain Integration",
+    author = "Liu, Zhengyuan  and
+      Chen, Nancy",
+    booktitle = "Proceedings of the 2nd Workshop on Computational Approaches to Discourse",
+    month = nov,
+    year = "2021",
+    address = "Punta Cana, Dominican Republic and Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.codi-main.11",
+    pages = "122--127",
 }
 ```
