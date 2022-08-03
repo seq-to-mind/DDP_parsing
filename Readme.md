@@ -30,6 +30,7 @@ We trained and evaluated the model with two English dialogue discourse parsing c
 * We recommend users to run the parser on a GPU-equipped environment. <br>
 
 ## Citation
+If the work is helpful, please cite following papers in your publications, reports, and slides.
 
 ```
 @inproceedings{liu-chen-2021-improving,
