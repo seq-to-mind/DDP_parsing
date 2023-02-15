@@ -29,12 +29,15 @@ We trained and evaluated the model with two English dialogue discourse parsing c
 * Run the script `main_infer.py` to obtain the dialogue discourse parsing result. See the script for detailed model output. <br>
 * We recommend users to run the parser on a GPU-equipped environment. <br>
 
-## Experimental results (F1 Score)
-| Training on Joint Data (Molweni+STAC) | Link | Link+Relation |
+## Experimental Result (F1 Score)
+Here is the result of the joint training on data from two domains (Molweni+STAC):
+
+| Training on Joint Data | &nbsp; &nbsp; Link &nbsp; &nbsp; | Link+Relation |
 |---------------------------------------|:----:|:-------------:|
 | Testing on STAC                       | 75.5 |      57.2     |
 | Testing on Molweni                    | 80.2 |      56.9     |
 
+For cross-domain experimental results, interested readers can refer to the paper.
 
 ## Citation
 If the work is helpful, please cite following papers in your publications, reports, and slides.
