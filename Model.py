@@ -28,8 +28,33 @@ class NeuralParser(nn.Module):
 
         batch_tokenized = self.tokenizer(input_sequence_list, return_tensors="pt", padding=True)
         batch_input_tensor = batch_tokenized.data["input_ids"].cuda()
+        batch_max_sequence_length = batch_input_tensor.size(1)
         attention_mask = batch_tokenized["attention_mask"].cuda()
-        batch_embedding_after_bert = self.language_backbone(batch_input_tensor, attention_mask=attention_mask)[0]
+
+        if global_config.using_sliding_window_bert and batch_max_sequence_length > 512:
+            """ add sliding window for long sequence. only use this part when inference on long conversations. """
+            window_size = 300
+            slide_steps = int(np.ceil(batch_max_sequence_length / window_size))
+            # print(batch_max_sequence_length, slide_steps)
+            window_embed_list = []
+            for tmp_step in range(slide_steps):
+                if tmp_step == 0:
+                    one_win_res = self.language_backbone(batch_input_tensor[:, :500], attention_mask=attention_mask[:, :500])[0][:, :window_size, :]
+                    window_embed_list.append(one_win_res)
+                elif tmp_step == slide_steps - 1:
+                    one_win_res = self.language_backbone(batch_input_tensor[:, -((batch_max_sequence_length - (window_size * tmp_step)) + 200):],
+                                                         attention_mask=attention_mask[:, -((batch_max_sequence_length - (window_size * tmp_step)) + 200):])[0][:, 200:, :]
+                    window_embed_list.append(one_win_res)
+                else:
+                    one_win_res = self.language_backbone(batch_input_tensor[:, (window_size * tmp_step - 100):(window_size * (tmp_step + 1) + 100)],
+                                                         attention_mask=attention_mask[:, (window_size * tmp_step - 100):(window_size * (tmp_step + 1) + 100)])[0][:, 100:400, :]
+                    window_embed_list.append(one_win_res)
+
+            batch_embedding_after_bert = torch.cat(window_embed_list, dim=1)
+            assert batch_embedding_after_bert.size(1) == batch_max_sequence_length
+
+        else:
+            batch_embedding_after_bert = self.language_backbone(batch_input_tensor, attention_mask=attention_mask)[0]
 
         batch_token_len_list = torch.sum(batch_tokenized["attention_mask"], dim=1).detach().numpy().tolist()
         batch_token_list = [batch_tokenized.encodings[i].tokens[:batch_token_len_list[i]] for i in range(current_batch_size)]
@@ -38,7 +63,8 @@ class NeuralParser(nn.Module):
         for i in range(current_batch_size):
             embedding_after_bert = batch_embedding_after_bert[i, :batch_token_len_list[i], :].unsqueeze(0)
             input_sentence = batch_token_list[i]
-            assert len(input_sentence) < 512
+            if global_config.using_sliding_window_bert is False:
+                assert len(input_sentence) < 512
 
             # selected_idx_list = [k for k, v in enumerate(input_sentence) if v in ["[CLS]", "[SEP]"]]
             # selected_idx_list = selected_idx_list[:-1]
@@ -249,7 +275,6 @@ class Model:
                 tmp_relation_res = self.agent.linear_for_relation(torch.cat([node_from_relation, node_to_relation], dim=2)).transpose(1, 2)
 
                 one_step_relation = torch.argmax(tmp_relation_res, dim=1).detach().cpu().numpy().tolist()[0][0]
-
                 tmp_point_list.append([j, one_step_link_to_point])
                 tmp_relation_list.append(one_step_relation)
 
@@ -257,7 +282,6 @@ class Model:
             relation_prediction.append(tmp_relation_list)
 
         return input_text, link_prediction, relation_prediction
-
     def batch_train(self, batch):
         self.agent.train()
         self.optimizer.zero_grad()
@@ -282,3 +306,4 @@ class Model:
         """ save model """
         print("Loading model from:", load_path)
         self.agent.load_state_dict(torch.load(load_path))
+
