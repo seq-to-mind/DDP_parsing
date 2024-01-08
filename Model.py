@@ -230,7 +230,7 @@ class Model:
 
     def batch_infer(self, batch):
         self.agent.eval()
-        
+
         input_text = [i.strip().split("<utterance>") for i in batch]
         edu_number = [len(i) for i in input_text]
         link_prediction, relation_prediction = [], []
@@ -273,8 +273,8 @@ class Model:
                 node_to_relation = one_sample_edu_reps[:, one_step_link_to_point, :].unsqueeze(1)
 
                 tmp_relation_res = self.agent.linear_for_relation(torch.cat([node_from_relation, node_to_relation], dim=2)).transpose(1, 2)
-
                 one_step_relation = torch.argmax(tmp_relation_res, dim=1).detach().cpu().numpy().tolist()[0][0]
+
                 tmp_point_list.append([j, one_step_link_to_point])
                 tmp_relation_list.append(one_step_relation)
 
@@ -282,6 +282,7 @@ class Model:
             relation_prediction.append(tmp_relation_list)
 
         return input_text, link_prediction, relation_prediction
+
     def batch_train(self, batch):
         self.agent.train()
         self.optimizer.zero_grad()
@@ -306,4 +307,3 @@ class Model:
         """ save model """
         print("Loading model from:", load_path)
         self.agent.load_state_dict(torch.load(load_path))
-
